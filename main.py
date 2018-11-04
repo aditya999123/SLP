@@ -4,7 +4,7 @@ from protocols import CyclicRouting
 import random
 
 yard = Yard (
-	l = 100, # length of the yard 
+	l = 200, # length of the yard 
 	b = 200, # breadth of the yard
 	# init = 0.45, # initial energy of each node
 	# free_space = 0.0000005,
@@ -28,4 +28,3 @@ panda_x = random.randint(0, yard.l)
 panda_y = random.randint(0, yard.b)
 
 cyclic_routing.evaluate(panda_x, panda_y)
-print cyclic_routing

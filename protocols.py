@@ -1,10 +1,10 @@
 from math import sqrt
-from helpers import dist
+from helpers import dist, colour
 
 import matplotlib.pyplot as plt 
 
 class CyclicRouting:
-	rings = 6
+	rings = 10
 	def __init__(self, yard):
 		self.yard = yard
 		self.ring = {
@@ -18,12 +18,26 @@ class CyclicRouting:
 		ring_size = int(maxd/CyclicRouting.rings);
 
 		for node in self.yard.nodes:
-			ring_no = int((dist(node.x, node.y, self.yard.sink.x, self.yard.sink.y) + ring_size - 1)/ring_size);
+			ring_no = round((dist(node.x, node.y, self.yard.sink.x, self.yard.sink.y) + ring_size - 1)/ring_size);
 
-			self.ring[ring_no].append(node.id)
+			self.ring[ring_no].append(node)
 
-	def __str__(self):
-		for x, y in self.ring.items():
-			print "ring", x, y
+		self.show_rings_on_graph()
 
-		return ""
+	def show_rings_on_graph(self):
+		for ring_no, nodes in self.ring.items():
+			x = []
+			y = []
+
+			for node in nodes:
+				x.append(node.x)
+				y.append(node.y)
+
+			plt.scatter(x, y, label = "ring %d" % ring_no, color= colour[ring_no], marker= "*", s=30)
+
+		x = [self.yard.sink.x]
+		y = [self.yard.sink.y]
+
+		plt.scatter(x, y, label = "sink", color = 'black', marker = "s", s=30)
+
+		plt.show()
