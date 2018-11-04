@@ -1,8 +1,8 @@
 class Node:
-	def __init__(self, x, y):
+	def __init__(self, x, y, energy = 0):
 		self.x = x
 		self.y = y
-		self.energy = 0
+		self.energy = energy
 
 	def send_data(len = 0):
 		self.energy -= 0 # will be modified
