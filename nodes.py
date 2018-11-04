@@ -26,6 +26,6 @@ class Node:
 		self.head = -1
 
 	# This node has head_id as its cluster head
-	def has_head(head_id):
+	def has_head(head):
 		self.is_cluster_head = False
-		self.head = head_id
+		self.head = head.id

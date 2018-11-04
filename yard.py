@@ -57,7 +57,7 @@ class Yard:
 
 
 	# modify location of the sink
-	def sink_modify_location(self, x, y):
+	def modify_sink_location(self, x, y):
 		self.sink.x = x
 		self.sink.y = y
 

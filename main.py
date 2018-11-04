@@ -1,4 +1,7 @@
 from yard import Yard
+from protocols import CyclicRouting
+
+import random
 
 yard = Yard (
 	l = 100, # length of the yard 
@@ -9,10 +12,20 @@ yard = Yard (
 )
 
 # populate with 100 nodes at random locations
+yard.modify_sink_location(80, 120)
 yard.populate(100)
 
-for node in yard.nodes:
-	print node, node.id
+# for node in yard.nodes:
+# 	print node, node.id
 
-print yard.sink.energy
-print yard.energy
+# print yard.sink.energy
+# print yard.energy
+
+cyclic_routing = CyclicRouting(yard)
+
+
+panda_x = random.randint(0, yard.l)
+panda_y = random.randint(0, yard.b)
+
+cyclic_routing.evaluate(panda_x, panda_y)
+print cyclic_routing
