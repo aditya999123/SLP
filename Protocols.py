@@ -70,10 +70,12 @@ class CyclicRouting:
 
 			for ring in rings:
 				for ch in self.rings[ring]:
+					# ###########################################
 					# subtract energy recv * 2
 
 					# subtract trans left
 					# subtract trans right
+					# #############################################
 
 	
 	def execute2(self, panda_x, panda_y):
