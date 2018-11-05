@@ -1,20 +1,26 @@
 class Node:
 	total_nodes = 0 # Static variable of the class, used as a counter
-	def __init__(self, x, y, energy = 0):
+	def __init__(self, x, y, energy = 0, grid_side_length = 20):
 		self.id = Node.total_nodes # unique id for each node
 		Node.total_nodes += 1
 		self.x = x
 		self.y = y
 
 		self.energy = energy
+		self.grid = {
+		}
 
+		self.grid['row_num'] = int((y-0.000001)/grid_side_length)
+		self.grid['col_num'] = int((x-0.000001)/grid_side_length)
 		self.is_cluster_head = False
 		self.head = -1 # if it is not a cluster head then it should belong to some cluster head
 
-	def send_data(len = 0):
+
+
+	def send_data(self, len = 0):
 		self.energy -= 0 # will be modified
 
-	def recieve_data(len = 0):
+	def recieve_data(self, len = 0):
 		self.energy -= 0 # will be modified
 
 	def __str__(self):
@@ -26,6 +32,6 @@ class Node:
 		self.head = -1
 
 	# This node has head_id as its cluster head
-	def has_head(head):
+	def has_head(self, head):
 		self.is_cluster_head = False
-		self.head = head.id
+		self.head = head

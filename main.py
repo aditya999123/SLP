@@ -9,6 +9,7 @@ yard = Yard (
 	# init = 0.45, # initial energy of each node
 	# free_space = 0.0000005,
 	# multi_path = 0.00000000012,
+	# grid_side_length = 20,
 )
 
 # populate with 100 nodes at random locations
@@ -21,10 +22,13 @@ yard.populate(100)
 # print yard.sink.energy
 # print yard.energy
 
-cyclic_routing = CyclicRouting(yard)
 
 
 panda_x = random.randint(0, yard.l)
 panda_y = random.randint(0, yard.b)
 
-cyclic_routing.evaluate(panda_x, panda_y)
+yard.clustering()
+
+yard.evaluate(panda_x, panda_y)
+cyclic_routing = CyclicRouting(yard)
+cyclic_routing.execute(panda_x, panda_y)
