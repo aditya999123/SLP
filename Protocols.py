@@ -89,14 +89,17 @@ class CyclicRouting:
 							if (node.head.y - Sy)*(Ex - Sx) > (node.head.x - Sx)*(Ey - Sy) :
 								distance = dist(node.head.x, node.head.y, Sx, Sy)
 								if dis_clockwise > distance :
+									dis_clockwise = distance
 									node_clockwise = node
 							
 							# anticlockwise
 							else :
 								distance = dist(node.head.x, node.head.y, Sx, Sy)
 								if dis_anticlockwise > distance :
+									dis_anticlockwise = distance
 									node_anticlockwise = node
-						cell.head.send_data_ch(self.yard, packet, d0)
+						cell.head.send_data_ch(self.yard, packet, dis_clockwise, d0)
+						cell.head.send_data_ch(self.yard, packet, dis_anticlockwise, d0)
 						if node_clockwise is not None:
 							node_clockwise.head.receive_data(self.yard, packet)
 						if node_anticlockwise is not None:

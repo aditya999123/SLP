@@ -36,9 +36,7 @@ class Node:
 		return cluster_node				
 
 
-	def send_data_ch(self, yard, packet, d0):
-
-		distance = dist(self.x, self.y, yard.sink.x, yard.sink.y)
+	def send_data_ch(self, yard, packet, distance, d0):
 		if distance >= d0 :
 			self.energy = self.energy - 2*((yard.energy.trans + yard.energy.data_aggr)*packet.packet_length + yard.energy.multi_path*packet.packet_length*(distance ** 4))
 		else :
