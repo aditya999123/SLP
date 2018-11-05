@@ -4,21 +4,20 @@ from yard import Packet, Yard
 import matplotlib.pyplot as plt 
 
 class CyclicRouting:
-	rings = 10
 	def __init__(self, yard):
 		self.yard = yard
 		self.energy = yard.energy
 	
 	def execute(self, panda_x, panda_y):
-		num_col = self.yard.l/self.yard.grid_side_length
-		num_row = self.yard.b/self.yard.grid_side_length
+		num_col = self.yard.l/self.yard.grid_size
+		num_row = self.yard.b/self.yard.grid_size
 		maxd = dist(0, 0, self.yard.l, self.yard.b)
 		ring_size = int(maxd/Yard.rings);
 		panda_ring_no = round((dist(panda_x, panda_y, self.yard.sink.x, self.yard.sink.y) + ring_size - 1)/ring_size);
-		panda_grid_no = (panda_y/self.yard.grid_side_length)*num_col + (panda_x/self.yard.grid_side_length) 
+		panda_grid_no = (panda_y/self.yard.grid_size)*num_col + (panda_x/self.yard.grid_size) 
 
-		# communication range of a node : sqrt(5)*grid_side_length
-		comm_range = sqrt(5)*self.yard.grid_side_length
+		# communication range of a node : sqrt(5)*grid_size
+		comm_range = sqrt(5)*self.yard.grid_size
 
 		trans = self.energy.trans
 		rec = self.energy.rec
