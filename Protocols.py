@@ -55,10 +55,12 @@ class CyclicRouting:
 		while self.sense(sensors, panda_x, panda_y):
 			cluster_heads = []
 			for node in sensors:
-				# A cluster head maintains cache
+				# A cluster head maintains cache, therefore a cluster would trigger ring only once
 				if node.cell.head not in cluster_heads:
 					cluster_heads.append(node.cell.head)
 
+				if(node.cell.head == node):
+					continue
 				# ###############################################
 				# subtract energy - node to CH
 				# ###############################################
@@ -69,7 +71,8 @@ class CyclicRouting:
 				rings.append(head.ring)
 
 			for ring in rings:
-				for ch in self.rings[ring]:
+				for cell in self.rings[ring]:
+					print cell.head.id
 					# ###########################################
 					# subtract energy recv * 2
 
