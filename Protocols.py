@@ -25,37 +25,42 @@ class CyclicRouting:
 
 				self.rings[max(d_x, d_y)].append(cell)
 
-		self.rings[0] = [self.yard.sink.cell]
+		# need to rethink this
+		# self.rings[0] = [self.yard.sink.cell]
 
 		for x, cells in self.rings.items():
 			print x, [cell.head.id for cell in cells]
 
+	def sense(self, cluster_heads, panda_x, panda_y):
+		sensor_range = sqrt(5)*self.yard.grid_size
+		
+		for sensor_node in self.yard.nodes:
+			if (sensor_node.energy > 0
+				and dist(sensor_node.x, sensor_node.y, panda_x, panda_y) <= sensor_range
+				and sensor_node.cell.head not in cluster_heads
+				):
+				
+				cluster_heads.append(sensor_node.cell.head)
+
+		return cluster_heads
+
 	def execute(self, panda_x, panda_y) :
-		self.eval_rings()
+		panda_ring = self.eval_rings()
+		packet = Packet()
+
+		d0 = sqrt(self.yard.energy.free_space / self.yard.energy.multi_path)
+
+		cluster_heads = []
+		while self.sense(cluster_heads, panda_x, panda_y):
+			for head in cluster_heads:
+				pass
+			print cluster_heads
+			break
+
 	
 	def execute2(self, panda_x, panda_y):
-		num_col = self.yard.l/self.yard.grid_size
-		num_row = self.yard.b/self.yard.grid_size
-		maxd = dist(0, 0, self.yard.l, self.yard.b)
-		ring_size = int(maxd/Yard.rings);
-		panda_ring_no = round((dist(panda_x, panda_y, self.yard.sink.x, self.yard.sink.y) + ring_size - 1)/ring_size);
-		panda_grid_no = (panda_y/self.yard.grid_size)*num_col + (panda_x/self.yard.grid_size) 
-
-		# communication range of a node : sqrt(5)*grid_size
-		comm_range = sqrt(5)*self.yard.grid_size
-
-		trans = self.energy.trans
-		rec = self.energy.rec
-		data_aggr = self.energy.data_aggr
-		free_space = self.energy.free_space
-		multi_path = self.energy.multi_path
-		packet = Packet()
-		packet_length = packet.packet_length
-		ctr_packet_length = packet.ctr_packet_length
-		dummy_packet_length = packet.dummy_packet_length
 		num_cluster = 0
 		num_nodes = 0
-		d0 = sqrt(free_space / multi_path)
 		
 		for node in self.yard.nodes:
 			num_nodes += 1

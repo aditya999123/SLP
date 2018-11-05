@@ -14,7 +14,7 @@ class Yard:
 		# initialize all values for energy calculations
 		self.energy = Energy(kwargs)
 
-		self.grid_size = kwargs.get('grid_size', 30)
+		self.grid_size = kwargs.get('grid_size', 20)
 
 		cols = self.l  / self.grid_size + 1
 		rows = self.b  / self.grid_size + 1
