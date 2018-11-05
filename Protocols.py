@@ -23,7 +23,9 @@ class CyclicRouting:
 				d_x = abs(cell.row - self.yard.sink.cell.row)
 				d_y = abs(cell.col - self.yard.sink.cell.col)
 
-				self.rings[max(d_x, d_y)].append(cell)
+				ring = max(d_x, d_y)
+				self.rings[ring].append(cell)
+				cell.head.ring = ring
 
 		# need to rethink this
 		# self.rings[0] = [self.yard.sink.cell]
@@ -31,31 +33,47 @@ class CyclicRouting:
 		for x, cells in self.rings.items():
 			print x, [cell.head.id for cell in cells]
 
-	def sense(self, cluster_heads, panda_x, panda_y):
+	def sense(self, sensors, panda_x, panda_y):
 		sensor_range = sqrt(5)*self.yard.grid_size
 		
 		for sensor_node in self.yard.nodes:
 			if (sensor_node.energy > 0
 				and dist(sensor_node.x, sensor_node.y, panda_x, panda_y) <= sensor_range
-				and sensor_node.cell.head not in cluster_heads
 				):
 				
-				cluster_heads.append(sensor_node.cell.head)
+				sensors.append(sensor_node)
 
-		return cluster_heads
+		return sensors
 
-	def execute(self, panda_x, panda_y) :
+	def execute(self, panda_x, panda_y):
 		panda_ring = self.eval_rings()
 		packet = Packet()
 
 		d0 = sqrt(self.yard.energy.free_space / self.yard.energy.multi_path)
 
-		cluster_heads = []
-		while self.sense(cluster_heads, panda_x, panda_y):
+		sensors = []
+		while self.sense(sensors, panda_x, panda_y):
+			cluster_heads = []
+			for node in sensors:
+				# A cluster head maintains cache
+				if node.cell.head not in cluster_heads:
+					cluster_heads.append(node.cell.head)
+
+				# ###############################################
+				# subtract energy - node to CH
+				# ###############################################
+			
+			rings = []
 			for head in cluster_heads:
-				pass
-			print cluster_heads
-			break
+				# Panda detected from different cluster, can belong to same ring or other
+				rings.append(head.ring)
+
+			for ring in rings:
+				for ch in self.rings[ring]:
+					# subtract energy recv * 2
+
+					# subtract trans left
+					# subtract trans right
 
 	
 	def execute2(self, panda_x, panda_y):

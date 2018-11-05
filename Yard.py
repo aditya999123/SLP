@@ -45,6 +45,12 @@ class Yard:
 
 	# determine cluster heads
 	def clusterize(self):
+		# after every iteration cluster head needs to be calculated agagin
+		for row in self.grid:
+			for cell in row:
+				cell.energy = 0
+				cell.head = None
+
 		for node in self.nodes :
 			if node.cell.head is None or node.energy > node.cell.head.energy :
 				node.cell.head = node
