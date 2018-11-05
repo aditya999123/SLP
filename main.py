@@ -1,5 +1,5 @@
-from yard import Yard
-from protocols import CyclicRouting
+from Yard import Yard
+from Protocols import CyclicRouting
 
 import random
 
@@ -23,4 +23,4 @@ panda_y = random.randint(0, yard.b)
 
 
 cyclic_routing = CyclicRouting(yard)
-# cyclic_routing.execute(panda_x, panda_y)
+cyclic_routing.execute(panda_x, panda_y)
