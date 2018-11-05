@@ -47,7 +47,7 @@ class CyclicRouting:
 					distance = dist(sensor_node.x, sensor_node.y, panda_x, panda_y)
 					source_factor = 1
 					if distance <= comm_range :
-						sensor_node_factor = 2
+						source_factor = 2
 
 					min_dis = maxd
 
@@ -82,7 +82,7 @@ class CyclicRouting:
 					# total energy dissipitated while receiving packets 
 					sensor_node.energy = sensor_node.energy - rec*ctr_packet_length*(round(num_nodes/num_cluster))
 
-		# for node in self.yard.ring[panda_ring_no] :
-		# 	print node.energy, node.is_cluster_head
+		for node in self.yard.ring[panda_ring_no] :
+			print node.energy, node.is_cluster_head
 
 
