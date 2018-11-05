@@ -1,6 +1,7 @@
 from nodes import Node
 from Grid import Grid
 from Energy import Energy
+from Packet import Packet
 
 import random
 
@@ -13,6 +14,7 @@ class Yard:
 
 		# initialize all values for energy calculations
 		self.energy = Energy(kwargs)
+		self.packet = Packet()
 
 		self.grid_size = kwargs.get('grid_size', 20)
 

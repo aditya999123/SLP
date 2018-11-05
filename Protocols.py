@@ -1,6 +1,5 @@
 from math import sqrt
 from helpers import dist, colour
-from Packet import Packet
 from Yard import Yard
 
 import matplotlib.pyplot as plt 
@@ -47,7 +46,6 @@ class CyclicRouting:
 
 	def execute(self, panda_x, panda_y):
 		panda_ring = self.eval_rings()
-		packet = Packet()
 
 		d0 = sqrt(self.yard.energy.free_space / self.yard.energy.multi_path)
 
