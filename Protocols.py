@@ -1,8 +1,7 @@
 from math import sqrt
 from helpers import dist, colour
-from Packet import Packet
 from Yard import Yard
-
+from Packet import Packet
 import matplotlib.pyplot as plt 
 
 class CyclicRouting:
@@ -47,7 +46,6 @@ class CyclicRouting:
 
 	def execute(self, panda_x, panda_y):
 		panda_ring = self.eval_rings()
-		packet = Packet()
 
 		d0 = sqrt(self.yard.energy.free_space / self.yard.energy.multi_path)
 
@@ -68,39 +66,41 @@ class CyclicRouting:
 				# ###############################################
 				if node.energy > 0 :
 					cluster_node = node.send_data_non_ch(self.yard, packet, d0)
-					cluster_node.receive_data(yard, packet)
+					cluster_node.receive_data(self.yard, packet)
 
 			rings = []
 			for head in cluster_heads:
 				# Panda detected from different cluster, can belong to same ring or other
 				rings.append(head.ring)
-
 			for ring in self.rings:
 				for cell in self.rings[ring]:
-					# print cell.head.id
-					if cell.energy > 0:
+					maxd = sqrt((self.yard.l)**2 + (self.yard.b)**2)
+					if cell.head.energy > 0:
 						dis_clockwise = maxd
 						dis_anticlockwise = maxd
-						Sx = cell.x
-						Sy = cell.y
+						node_clockwise = None
+						node_anticlockwise = None
+						Sx = cell.head.x
+						Sy = cell.head.y
 						Ex = self.yard.sink.x
 						Ey = self.yard.sink.y
 						for node in self.rings[ring] :
-							if node.energy > 0 :
-								#clockwise
-								if (node.y - Sy)*(Ex - Sx) > (node.x - Sx)*(Ey - Sy) :
-									distance = dis(node.x, node.y, Sx, Sy)
-									if dis_clockwise > distance :
-										node_clockwise = node
-								
-								# anticlockwise
-								else :
-									distance = dis(node.x, node.y, Sx, Sy)
-									if dis_anticlockwise > distance :
-										node_anticlockwise = node
-						cell.send_data_ch(self.yard, packet, d0)
-						node_clockwise.receive_data(yard, packet)
-						node_anticlockwise.receive_data(yard, packet)
+							#clockwise
+							if (node.head.y - Sy)*(Ex - Sx) > (node.head.x - Sx)*(Ey - Sy) :
+								distance = dist(node.head.x, node.head.y, Sx, Sy)
+								if dis_clockwise > distance :
+									node_clockwise = node
+							
+							# anticlockwise
+							else :
+								distance = dist(node.head.x, node.head.y, Sx, Sy)
+								if dis_anticlockwise > distance :
+									node_anticlockwise = node
+						cell.head.send_data_ch(self.yard, packet, d0)
+						if node_clockwise is not None:
+							node_clockwise.head.receive_data(self.yard, packet)
+						if node_anticlockwise is not None:
+							node_anticlockwise.head.receive_data(self.yard, packet)
 
 			self.yard.clusterize()
 

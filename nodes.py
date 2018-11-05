@@ -1,3 +1,6 @@
+from math import sqrt
+from helpers import dist, colour
+
 class Node:
 	total_nodes = 0 # Static variable of the class, used as a counter
 	
@@ -34,6 +37,7 @@ class Node:
 
 
 	def send_data_ch(self, yard, packet, d0):
+
 		distance = dist(self.x, self.y, yard.sink.x, yard.sink.y)
 		if distance >= d0 :
 			self.energy = self.energy - 2*((yard.energy.trans + yard.energy.data_aggr)*packet.packet_length + yard.energy.multi_path*packet.packet_length*(distance ** 4))
@@ -41,7 +45,7 @@ class Node:
 			self.energy = self.energy - 2*((yard.energy.trans + yard.energy.data_aggr)*packet.packet_length + yard.energy.free_space*packet.packet_length*(distance ** 2)) 
 		
 
-	def recieve_data(self, yard, packet):
+	def receive_data(self, yard, packet):
 		self.energy = self.energy - (yard.energy.rec + yard.energy.data_aggr)*packet.packet_length
 
 
