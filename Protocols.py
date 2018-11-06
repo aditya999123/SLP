@@ -2,7 +2,8 @@ from math import sqrt
 from helpers import dist, colour
 from Yard import Yard
 from Packet import Packet
-import matplotlib.pyplot as plt 
+import time
+import matplotlib.pyplot as plt
 
 class CyclicRouting:
 	iteration = 0
@@ -47,12 +48,67 @@ class CyclicRouting:
 		print "len", len(sensors)
 		return len(sensors) > 0
 
+	def plot_nodes_ch(self, plt_node_ch, panda_x, panda_y):
+		sensors_x = []
+		sensors_y = []
+
+		CH_x = []
+		CH_y = []
+
+		plt_node_ch.cla()
+
+		for node in self.yard.nodes:
+			if node.energy <= 0:
+				continue
+				
+			if(node.cell.head != node):
+				sensors_x.append(node.x)
+				sensors_y.append(node.y)
+			else:
+				CH_x.append(node.x)
+				CH_y.append(node.y)
+
+		plt_node_ch.scatter(sensors_x, sensors_y, label = "sensor", color = "blue", marker = "*", s=30)
+		plt_node_ch.scatter(CH_x, CH_y, label = "CH", color = "black", marker = "*", s=30)
+
+		plt_node_ch.scatter([panda_x], [panda_y], label = "panda", color = "red", marker = "d", s=60)
+		plt_node_ch.scatter([self.yard.sink.x], [self.yard.sink.y], label = "sink", color = "green", marker = "s", s=60)
+		plt_node_ch.legend()
+		# plt_node_ch
+
+	def plot_energy(self, plt_energy):
+		energy_y = []
+		node_id = []
+
+		plt_energy.cla()
+
+		for node in self.yard.nodes:
+			energy_y.append(max(node.energy, 0))
+			node_id.append(node.id)
+
+		plt_energy.bar(node_id, energy_y, align='center')	
+		plt_energy.legend()	
+
 	def execute(self, panda_x, panda_y):
 		packet = Packet()
 		self.eval_rings()
 		
 		sensors = []
+
+		fig = plt.figure()
+		plt.ion()
+		plt.show()
+		# plt.legend()
+		plt_node_ch = fig.add_subplot(211)
+		plt_energy = fig.add_subplot(212)
+
 		while self.sense(sensors, panda_x, panda_y):
+			self.plot_nodes_ch(plt_node_ch, panda_x, panda_y)
+			self.plot_energy(plt_energy)
+
+			plt.pause(1e-17)
+			# time.sleep(0.1)
+
 			CyclicRouting.iteration += 1
 
 			cluster_heads = []
@@ -94,7 +150,7 @@ class CyclicRouting:
 							continue
 
 						if val is 0:
-							continue
+							val = 1
 
 						sign = val/abs(val)
 
@@ -121,6 +177,8 @@ class CyclicRouting:
 			sensors = []
 
 		print "iterations done: ", CyclicRouting.iteration
+		plt.show()
+
 
 
 

@@ -4,8 +4,8 @@ from Protocols import CyclicRouting
 import random
 
 yard = Yard (
-	l = 500, # length of the yard 
-	b = 500, # breadth of the yard
+	l = 200, # length of the yard 
+	b = 200, # breadth of the yard
 	init = 0.5, # initial energy of each node
 	# free_space = 0.0000005,
 	# multi_path = 0.00000000012,

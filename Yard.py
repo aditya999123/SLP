@@ -16,7 +16,7 @@ class Yard:
 		self.energy = Energy(kwargs)
 		self.packet = Packet()
 
-		self.grid_size = kwargs.get('grid_size', 20)
+		self.grid_size = kwargs.get('grid_size', 30)
 
 		cols = self.l  / self.grid_size + 1
 		rows = self.b  / self.grid_size + 1
