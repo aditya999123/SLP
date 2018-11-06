@@ -17,34 +17,32 @@ class Node:
 
 		self.is_cluster_head = False
 
-	def send_data_non_ch(self, yard, packet, d0):
+	def send_data_non_ch(self, energy, packet):
+		d0 = sqrt(energy.free_space / energy.multi_path)
 		
-		# determining nearest cluster_node
-		min_dis = sqrt((yard.l)**2 + (yard.b)**2)
-		for node in yard.nodes :
-			if node.is_cluster_head == True :
-				distance = dist(self.x, self.y, node.x, node.y)
-				if min_dis > distance :
-					min_dis = distance
-					cluster_node = node
+		# distance of sensor to its CH
+		d = dist(self.x, self.y, self.cell.head.x, self.cell.head.y)
 
-		if min_dis > d0 :
-			self.energy = self.energy - (packet.ctr_packet_length*yard.energy.trans + yard.energy.multi_path*packet.packet_length*(min_dis ** 4)) 
+		if d > d0 :
+			self.energy = self.energy - (packet.ctr_packet_length*energy.trans + energy.multi_path*packet.packet_length*(d ** 4)) 
 		else :
-			self.energy = self.energy - (packet.ctr_packet_length*yard.energy.trans + yard.energy.free_space*packet.packet_length*(min_dis ** 2)) 
-		
-		return cluster_node				
+			self.energy = self.energy - (packet.ctr_packet_length*energy.trans + energy.free_space*packet.packet_length*(d ** 2)) 				
 
+		print self, self.energy
 
-	def send_data_ch(self, yard, packet, distance, d0):
+	def send_data_ch(self, energy, packet, distance):
+		d0 = sqrt(energy.free_space / energy.multi_path)
+
 		if distance >= d0 :
-			self.energy = self.energy - 2*((yard.energy.trans + yard.energy.data_aggr)*packet.packet_length + yard.energy.multi_path*packet.packet_length*(distance ** 4))
+			self.energy = self.energy - 2*((energy.trans + energy.data_aggr)*packet.packet_length + energy.multi_path*packet.packet_length*(distance ** 4))
 		else :
-			self.energy = self.energy - 2*((yard.energy.trans + yard.energy.data_aggr)*packet.packet_length + yard.energy.free_space*packet.packet_length*(distance ** 2)) 
+			self.energy = self.energy - 2*((energy.trans + energy.data_aggr)*packet.packet_length + energy.free_space*packet.packet_length*(distance ** 2)) 
 		
+		print self, self.energy
 
-	def receive_data(self, yard, packet):
-		self.energy = self.energy - (yard.energy.rec + yard.energy.data_aggr)*packet.packet_length
+	def receive_data(self, energy, packet):
+		self.energy = self.energy - (energy.rec + energy.data_aggr) * packet.packet_length
+		print self, self.energy
 
 
 	def __str__(self):
