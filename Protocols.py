@@ -111,6 +111,7 @@ class CyclicRouting:
 						cell.head.send_data_ch(self.yard.energy, packet, d_nodes[-1][0])
 						cell.head.receive_data(self.yard.energy, packet)
 
+					#only one node remains in the ring || should be thought of
 					if d_nodes[1][1] is None and d_nodes[-1][1] is None:
 						cell.head.energy = 0
 
