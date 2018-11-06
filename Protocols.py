@@ -61,12 +61,12 @@ class CyclicRouting:
 			if node.energy <= 0:
 				continue
 				
-			if(node.cell.head != node):
-				sensors_x.append(node.x)
-				sensors_y.append(node.y)
-			else:
+			if node.is_cluster_head:
 				CH_x.append(node.x)
 				CH_y.append(node.y)
+			else:
+				sensors_x.append(node.x)
+				sensors_y.append(node.y)
 
 		plt_node_ch.scatter(sensors_x, sensors_y, label = "sensor", color = "blue", marker = "*", s=30)
 		plt_node_ch.scatter(CH_x, CH_y, label = "CH", color = "black", marker = "*", s=30)
@@ -120,7 +120,7 @@ class CyclicRouting:
 
 				print "nn1", node
 
-				if(node.cell.head == node):
+				if node.is_cluster_head:
 					continue
 				
 				print "nn", node
