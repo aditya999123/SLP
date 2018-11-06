@@ -48,6 +48,15 @@ class CyclicRouting:
 		print "len", len(sensors)
 		return len(sensors) > 0
 
+	def plot_grid(self, plt_node_ch):
+		for x in range(0, self.yard.l, self.yard.grid_size):
+			y = self.yard.b
+			plt_node_ch.plot([x, x], [0, y], linewidth = .3, color = 'black', linestyle = '-.')
+
+		for y in range(0, self.yard.b, self.yard.grid_size):
+			x = self.yard.l
+			plt_node_ch.plot([0, x], [y, y], linewidth = .3, color = 'black', linestyle = '-.')
+
 	def plot_nodes_ch(self, plt_node_ch, panda_x, panda_y):
 		sensors_x = []
 		sensors_y = []
@@ -56,6 +65,7 @@ class CyclicRouting:
 		CH_y = []
 
 		plt_node_ch.cla()
+		self.plot_grid(plt_node_ch)
 
 		for node in self.yard.nodes:
 			if node.energy <= 0:
@@ -106,7 +116,7 @@ class CyclicRouting:
 			self.plot_nodes_ch(plt_node_ch, panda_x, panda_y)
 			self.plot_energy(plt_energy)
 
-			plt.pause(1e-17)
+			plt.pause(1e-50)
 			# time.sleep(0.1)
 
 			CyclicRouting.iteration += 1
@@ -178,7 +188,4 @@ class CyclicRouting:
 
 		print "iterations done: ", CyclicRouting.iteration
 		plt.show()
-
-
-
-
+		plt.pause(10)
