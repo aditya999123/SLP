@@ -28,7 +28,6 @@ class Node:
 		else :
 			self.energy = self.energy - (packet.ctr_packet_length*energy.trans + energy.free_space*packet.packet_length*(d ** 2)) 				
 
-		print self, self.energy
 
 	def send_data_ch(self, energy, packet, distance):
 		d0 = sqrt(energy.free_space / energy.multi_path)
@@ -38,15 +37,13 @@ class Node:
 		else :
 			self.energy = self.energy - 2*((energy.trans + energy.data_aggr)*packet.packet_length + energy.free_space*packet.packet_length*(distance ** 2)) 
 		
-		print self, self.energy
 
 	def receive_data(self, energy, packet):
 		self.energy = self.energy - (energy.rec + energy.data_aggr) * packet.packet_length
-		print self, self.energy
 
 
 	def __str__(self):
-		return "x = %d, y = %d" % (self.x, self.y)
+		return "x = %d, y = %d, id = %d" % (self.x, self.y, self.id)
 
 	# Mark as a cluster head
 	def make_cluster_head(self):

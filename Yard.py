@@ -64,8 +64,3 @@ class Yard:
 				node.has_head()
 
 		print "clusterized"
-
-		# for row in self.grid:
-		# 	for cell in row:
-		# 		if cell.head is not None:
-		# 			print cell.head.id

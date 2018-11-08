@@ -4,6 +4,7 @@ from Yard import Yard
 from Packet import Packet
 import time
 import matplotlib.pyplot as plt
+import random
 
 class CyclicRouting:
 	iteration = 0
@@ -112,6 +113,10 @@ class CyclicRouting:
 		plt_node_ch = fig.add_subplot(211)
 		plt_energy = fig.add_subplot(212)
 
+		# initialising the GreedyRouting Protocol
+		greedyRouting = GreedyRouting(self.yard)
+		
+
 		while self.sense(sensors, panda_x, panda_y):
 			self.plot_nodes_ch(plt_node_ch, panda_x, panda_y)
 			self.plot_energy(plt_energy)
@@ -121,19 +126,19 @@ class CyclicRouting:
 
 			CyclicRouting.iteration += 1
 
+			# constructing the greedy routing table
+			greedyRouting.eval_routing_table()
+
 			cluster_heads = []
 			for node in sensors:
-				print "abc", node, node.energy
 				# A cluster head maintains cache, therefore a cluster would trigger the ring only once
 				if node.cell.head not in cluster_heads:
 					cluster_heads.append(node.cell.head)
 
-				print "nn1", node
 
 				if node.is_cluster_head:
 					continue
 				
-				print "nn", node
 
 				node.send_data_non_ch(self.yard.energy, packet)
 
@@ -141,6 +146,9 @@ class CyclicRouting:
 			for head in cluster_heads:
 				# Panda detected from different cluster, can belong to same ring or other
 				rings.append(head.ring)
+
+			# executing the Greedy Routing
+			greedyRouting.execute(self.rings, rings, packet)
 
 			for ring in rings:
 				for cell in self.rings[ring]:
@@ -181,11 +189,92 @@ class CyclicRouting:
 					if d_nodes[1][1] is None and d_nodes[-1][1] is None:
 						cell.head.energy = 0
 
-				self.yard.clusterize()
-				self.eval_rings()
+			self.yard.clusterize()
+			self.eval_rings()
 
 			sensors = []
 
 		print "iterations done: ", CyclicRouting.iteration
 		plt.show()
 		plt.pause(10)
+
+
+class GreedyRouting :
+
+	def __init__(self, yard) :
+		self.yard = yard
+		self.neighbours = {}
+
+	def eval_routing_table(self) :
+		sensor_range = sqrt(5) * self.yard.grid_size
+
+		# evaluating all the alive neighbours in the communication range
+		for node in self.yard.nodes :
+			self.neighbours[node.id] = []
+			for adj_node in self.yard.nodes :
+				if adj_node.id != node.id and adj_node.energy > 0 and dist(node.x, node.y, adj_node.x, adj_node.y) <= sensor_range :
+					self.neighbours[node.id].append(adj_node)
+
+
+	def execute(self, rings, event_rings, packet) :
+		boundary_nodes = []
+		outer_ring = len(rings) - 1
+		
+		# identifying the outermost nodes
+		for counter in rings :
+			if len(rings[outer_ring]) > 0 :
+				for node in rings[outer_ring] :
+					boundary_nodes.append(node.head)
+				break
+			else :
+				outer_ring -= 1
+
+		print len(boundary_nodes),"boundary_nodes"
+
+		starting_node = None
+
+		# randomly picking up the outermost node to initiate the protocol
+		while starting_node == None :
+			node_id = random.randint(0,len(boundary_nodes) - 1)
+			if boundary_nodes[node_id].energy > 0 :
+				starting_node = boundary_nodes[node_id]
+
+		print "Starting Greedy Node : ",starting_node
+
+		interference_node = None
+		maxd = dist(0, 0, self.yard.l, self.yard.b)
+
+
+		# executing the protocol until the greedy path intersects the cyclic path
+		while interference_node == None :
+			min_dist = maxd
+			nearest_node = None
+
+			if len(self.neighbours[starting_node.id]) > 0 :
+				
+				# energy dissipitated while transmiting
+				starting_node.send_data_non_ch(self.yard.energy, packet)
+				print "transmiting",starting_node
+
+				# identifying which alive neighbour in the communication range is closest to sink 
+				for node in self.neighbours[starting_node.id] :
+					if node.energy > 0 :
+						distance_sink = dist(node.x, node.y, self.yard.sink.x, self.yard.sink.y)
+						if min_dist < distance_sink :
+							min_dist = distance_sink
+							nearest_node = node
+						if node.cell.head.ring in event_rings :
+							interference_node = node 	
+							nearest_node = interference_node
+							print "ring number", node.cell.head.ring	
+							print "interference_node",interference_node			
+							break
+
+				if nearest_node is not None :
+					# energy dissipitated while receiving
+					nearest_node.receive_data(self.yard.energy, packet)
+					print "receiving",nearest_node.id
+				starting_node = nearest_node
+			else :
+				# all nodes in the communication range are Dead
+				break
